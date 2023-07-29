@@ -11,8 +11,8 @@ export const authOptions: AuthOptions = {
     adapter:PrismaAdapter(prisma),
     providers:[
         GithubProvider({
-            clientId:process.env.GITHUB_ID as string,
-            clientSecret:process.env.GITHUB_SECRET as string
+            clientId:process.env.GITHUB_CLIENT_ID as string,
+            clientSecret:process.env.GITHUB_CLIENT_SECRET as string
         }),
         GoogleProvider({
             clientId:process.env.GOOGLE_ID as string,
@@ -25,7 +25,6 @@ export const authOptions: AuthOptions = {
                 password:{label:"password",type:"password"}
             },
             async authorize(credentials) {
-                console.error("BURASI ONEMLI----------",credentials)
                 if (!credentials?.email || credentials.password) {
                     throw new Error("Invalid Credentials");
                 }
