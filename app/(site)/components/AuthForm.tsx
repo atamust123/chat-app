@@ -1,10 +1,14 @@
 "use client";
 
+import axios from "axios";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { BsGithub, BsGoogle } from "react-icons/bs";
-import Form from "./Form/Form";
 import { AuthButton } from "./AuthButton";
+import Form from "./Form/Form";
 
 enum Variant {
   "LOGIN",
@@ -12,8 +16,10 @@ enum Variant {
 }
 
 export const AuthForm = () => {
-  const [variant, setVariant] = useState<Variant>();
+  const [variant, setVariant] = useState<Variant>(Variant.LOGIN);
   const [loading, setLoading] = useState(false);
+  const session = useSession();
+  const router = useRouter();
 
   const toggleVariant = useCallback(() => {
     setVariant((prev) =>
@@ -33,13 +39,40 @@ export const AuthForm = () => {
     setLoading(true);
     // todo on submit func
     if (variant === Variant.LOGIN) {
+      signIn("credentials", { ...data, redirect: false })
+        .then((callback) => {
+          callback?.error && toast.error("Invalid Credentials");
+          callback?.ok && toast.success("Logged In");
+        })
+        .finally(() => setLoading(false));
     } else if (variant === Variant.REGISTER) {
+      axios
+        .post("/api/register", data)
+        .then(() =>
+          signIn("credentials", {
+            ...data,
+            redirect: false,
+          })
+        )
+        .then((callback) => {
+          callback?.error && toast.error("Invalid Credentials");
+          callback?.ok && router.push("/conversations");
+        })
+        .catch((error) => toast.error(error + "Something went wrong!"))
+        .finally(() => setLoading(false));
     }
   };
 
   const socialAction = (action: "github" | "google") => {
     setLoading(true);
     // todo sign in func
+
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        callback?.error && toast.error("Invalid Credentials");
+        callback?.ok && router.push("/conversations");
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -75,7 +108,7 @@ export const AuthForm = () => {
             inputProps={{ required: true, type: "email" }}
           />
           <Form.Input
-            label="Email Address"
+            label="Password"
             loading={loading}
             name="password"
             key={"password"}
