@@ -3,7 +3,7 @@
 import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { BsGithub, BsGoogle } from "react-icons/bs";
@@ -21,6 +21,10 @@ export const AuthForm = () => {
   const session = useSession();
   const router = useRouter();
 
+  useEffect(() => {
+    session?.status === "authenticated" && router.push("/users");
+  }, [session.status, router]);
+
   const toggleVariant = useCallback(() => {
     setVariant((prev) =>
       prev === Variant.LOGIN ? Variant.REGISTER : Variant.LOGIN
@@ -37,12 +41,12 @@ export const AuthForm = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setLoading(true);
-    // todo on submit func
+
     if (variant === Variant.LOGIN) {
       signIn("credentials", { ...data, redirect: false })
         .then((callback) => {
           callback?.error && toast.error("Invalid Credentials");
-          callback?.ok && toast.success("Logged In");
+          callback?.ok && router.push("/users");
         })
         .finally(() => setLoading(false));
     } else if (variant === Variant.REGISTER) {
@@ -56,7 +60,7 @@ export const AuthForm = () => {
         )
         .then((callback) => {
           callback?.error && toast.error("Invalid Credentials");
-          callback?.ok && router.push("/conversations");
+          callback?.ok && router.push("/users");
         })
         .catch((error) => toast.error(error + "Something went wrong!"))
         .finally(() => setLoading(false));
@@ -65,12 +69,11 @@ export const AuthForm = () => {
 
   const socialAction = (action: "github" | "google") => {
     setLoading(true);
-    // todo sign in func
 
     signIn(action, { redirect: false })
       .then((callback) => {
         callback?.error && toast.error("Invalid Credentials");
-        callback?.ok && router.push("/conversations");
+        callback?.ok && router.push("/users");
       })
       .finally(() => setLoading(false));
   };

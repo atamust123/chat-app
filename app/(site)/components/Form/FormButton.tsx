@@ -1,4 +1,4 @@
-import Button, { ButtonProps } from "../Button";
+import Button, { ButtonProps } from "../../../components/Button";
 
 interface FormButton extends ButtonProps {}
 

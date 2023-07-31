@@ -1,6 +1,6 @@
+import Input from "@/app/components/Input";
 import { DetailedHTMLProps, InputHTMLAttributes } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import Input from "../Input";
 
 interface FormInput {
   loading: boolean;
