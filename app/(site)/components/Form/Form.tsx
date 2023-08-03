@@ -2,6 +2,7 @@ import React from "react";
 import { FormProvider, UseFormReturn } from "react-hook-form";
 import { FormInput } from "./FormInput";
 import { FormButton } from "./FormButton";
+import { FormSelect } from "./FormSelect";
 
 interface Form {
   children: React.ReactNode;
@@ -35,5 +36,6 @@ const Form: React.FC<Form> = (props) => {
 export default Object.assign(Form, {
   Input: FormInput,
   Button: FormButton,
+  Select: FormSelect,
   // todo other UI components
 });

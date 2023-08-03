@@ -1,4 +1,5 @@
 import getSession from "./getSession";
+import prisma  from "@/app/libs/prismadb"
 
 export const getCurrentUser = async ()=>{
     try {

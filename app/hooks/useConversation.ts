@@ -3,8 +3,9 @@ import { useMemo } from "react";
 
 export const useConversation=()=>{
     const params = useParams();
+
     const conversationId = useMemo(()=>{
-        return params?.conversationId ? params.conversationId : "";
+        return (params?.conversationId ? params.conversationId : "" ) as string;
     },[params?.conversationId]);
 
     const open = useMemo(()=> !!conversationId,[conversationId]);

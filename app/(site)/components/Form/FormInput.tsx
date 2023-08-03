@@ -3,9 +3,9 @@ import { DetailedHTMLProps, InputHTMLAttributes } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 interface FormInput {
-  loading: boolean;
   name: string;
-  label: string;
+  label?: string;
+  loading?: boolean;
   inputProps?: DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
@@ -18,7 +18,7 @@ interface FormInput {
  * @returns Input components
  */
 export const FormInput: React.FC<FormInput> = (props) => {
-  const { loading, name, label = "Boş", inputProps } = props || {};
+  const { loading, name, label = "", inputProps } = props || {};
   const { control } = useFormContext();
   return (
     <Controller
